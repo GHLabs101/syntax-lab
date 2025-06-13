@@ -5,13 +5,31 @@ on:
     branches: [main]
 
 jobs:
-  monolith:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-path: ${{ steps.build.outputs.path }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: build
+        name: Build
+        run: |
+          mkdir dist && echo "artifact" > dist/app.txt
+          echo "path=dist" >> $GITHUB_OUTPUT
+
+  test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build
-        run: echo "build"
+      - name: Pull artifact
+        run: echo "Using artifact at ${{ needs.build.outputs.artifact-path }}"
       - name: Test
-        run: echo "test"
+        run: echo "tests passed"
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy
-        run: echo "deploy"
+        run: echo "Deploying ${{ needs.build.outputs.artifact-path }}"
