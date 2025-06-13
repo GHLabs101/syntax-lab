@@ -1,0 +1,17 @@
+name Build Test Deploy  # Missing colon
+
+on
+  push:
+    branches: [main]
+
+jobs:
+ build-test-deploy:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: echo "build"
+    - name: Test
+        run: echo "test"   # Indentation error
+    - name: Deploy
+      run: echo "deploy"
